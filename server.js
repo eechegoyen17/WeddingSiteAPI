@@ -1,10 +1,17 @@
 const express = require("express");
-const cors = require("cors");
+const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
+const knex = require('knex');
+
+const config = require("./app/config/db.config")
+
+const db = knex({
+  client: config.client,
+  connection: config.connection
+})
 const app = express();
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
-app.use(cors(corsOptions));
+
+app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
