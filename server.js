@@ -11,6 +11,10 @@ const authJwt = require('./app/middleware/authJwt')
 const register = require('./app/controllers/register')
 const signin = require('./app/controllers/signin');
 
+const authTkn = (req, res, next) => {
+  authJwt.verifyToken(req, res, next, jwt, tkey)
+}
+
 const db = knex({
   client: config.client,
   connection: config.connection
@@ -24,12 +28,9 @@ app.get("/", (req, res) => {
   res.json({ message: "It Works!!!" });
 });
 
-app.get("/users", (req, res, next) => {
-  authJwt.verifyToken(req, res, next, jwt, tkey)
-    
+app.get("/users", authTkn, (req, res, next) => {
   return db.select('*').from('users')
-  .then( user => res.json(user) )
-    
+  .then( user => res.json(user) )    
 })
 
 app.post('/signin', (req, res) => {signin.handleSignin(req, res, db, bcrypt, jwt, tkey)})
